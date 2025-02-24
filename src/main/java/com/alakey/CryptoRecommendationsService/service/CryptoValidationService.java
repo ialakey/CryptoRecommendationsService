@@ -19,7 +19,13 @@ public class CryptoValidationService {
     @PostConstruct
     public void loadSupportedCryptos() {
         try {
-            File folder = new ClassPathResource(DATA_FOLDER).getFile();
+            File folder;
+            if (isRunningInDocker()) {
+                folder = new File("/app/data/");
+            } else {
+                folder = new ClassPathResource(DATA_FOLDER).getFile();
+            }
+
             File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
 
             if (files == null || files.length == 0) {
@@ -39,6 +45,10 @@ public class CryptoValidationService {
         } catch (IOException e) {
             log.error("Error accessing folder {}: {}", DATA_FOLDER, e.getMessage());
         }
+    }
+
+    private boolean isRunningInDocker() {
+        return new File("/app").exists();
     }
 
     public boolean isSupported(String cryptoSymbol) {

@@ -26,7 +26,13 @@ public class CSVLoader {
     @PostConstruct
     public void loadCsvData() {
         try {
-            File folder = new ClassPathResource(DATA_FOLDER).getFile();
+            File folder;
+            if (isRunningInDocker()) {
+                folder = new File("/app/data/");
+            } else {
+                folder = new ClassPathResource(DATA_FOLDER).getFile();
+            }
+
             File[] csvFiles = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
 
             if (csvFiles == null || csvFiles.length == 0) {
@@ -41,6 +47,10 @@ public class CSVLoader {
         } catch (Exception e) {
             log.error("Error accessing data folder: {}", e.getMessage());
         }
+    }
+
+    private boolean isRunningInDocker() {
+        return new File("/app").exists();
     }
 
     private void processFile(File file) {
