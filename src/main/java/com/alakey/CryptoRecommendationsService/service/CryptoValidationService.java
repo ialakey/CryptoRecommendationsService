@@ -14,6 +14,7 @@ import java.util.Set;
 @Slf4j
 public class CryptoValidationService {
     private static final String DATA_FOLDER = "data/";
+    private static final String DATA_FOLDER_DOCKER = "/app/data/";
     private final Set<String> supportedCryptos = new HashSet<>();
 
     @PostConstruct
@@ -21,7 +22,7 @@ public class CryptoValidationService {
         try {
             File folder;
             if (isRunningInDocker()) {
-                folder = new File("/app/data/");
+                folder = new File(DATA_FOLDER_DOCKER);
             } else {
                 folder = new ClassPathResource(DATA_FOLDER).getFile();
             }

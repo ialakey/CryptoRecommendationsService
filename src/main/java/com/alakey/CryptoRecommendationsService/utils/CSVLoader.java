@@ -22,13 +22,14 @@ import java.util.List;
 public class CSVLoader {
     private final CryptoPriceRepository repository;
     private static final String DATA_FOLDER = "data/";
+    private static final String DATA_FOLDER_DOCKER = "/app/data/";
 
     @PostConstruct
     public void loadCsvData() {
         try {
             File folder;
             if (isRunningInDocker()) {
-                folder = new File("/app/data/");
+                folder = new File(DATA_FOLDER_DOCKER);
             } else {
                 folder = new ClassPathResource(DATA_FOLDER).getFile();
             }
